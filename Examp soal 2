@@ -1,0 +1,104 @@
+const boardAman = [
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", "R", ".", ".", ".", "."], // Benteng (R) di [2, 3]
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", "K", ".", "."], // Raja (K) di [4, 5]
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."]
+];
+
+const N = 8; // Ukuran papan catur
+
+/**
+ * Mencari posisi bidak di papan.
+ */
+function findPiecePosition(board, piece) {
+    for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+            if (board[r][c] === piece) {
+                return { row: r, col: c };
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Fungsi utama untuk memeriksa SKAK Benteng.
+ */
+function checkRookCheck(board) {
+    const kingPos = findPiecePosition(board, 'K');
+    const rookPos = findPiecePosition(board, 'R');
+
+    if (!kingPos || !rookPos) {
+        return "Aman (Bidak tidak lengkap)";
+    }
+
+    const { row: rK, col: cK } = kingPos;
+    const { row: rR, col: cR } = rookPos;
+
+    // A. Cek Jalur Horizontal
+    if (rK === rR) {
+        let isBlocked = false;
+        const startCol = Math.min(cK, cR) + 1;
+        const endCol = Math.max(cK, cR);
+
+        for (let c = startCol; c < endCol; c++) {
+            if (board[rK][c] !== '.') {
+                isBlocked = true;
+                break;
+            }
+        }
+        if (!isBlocked) return "SKAK!";
+    }
+
+    // B. Cek Jalur Vertikal
+    if (cK === cR) {
+        let isBlocked = false;
+        const startRow = Math.min(rK, rR) + 1;
+        const endRow = Math.max(rK, rR);
+
+        for (let r = startRow; r < endRow; r++) {
+            if (board[r][cK] !== '.') {
+                isBlocked = true;
+                break;
+            }
+        }
+        if (!isBlocked) return "SKAK!";
+    }
+
+    return "Aman";
+}
+
+// Jalankan Program dengan boardAman
+console.log("\n===== SOAL 2: PEMERIKSAAN SKAK CATUR =====");
+console.log("Output Contoh 1 (boardAman): " + checkRookCheck(boardAman));
+
+
+// --- Contoh Kasus SKAK Vertikal ---
+const boardSkakVertikal = [
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", "R", ".", ".", "."], // R di [1, 4]
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", "K", ".", ".", "."], // K di [3, 4]
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."]
+];
+console.log("Output Contoh 2 (SKAK Vertikal): " + checkRookCheck(boardSkakVertikal));
+
+// --- Contoh Kasus SKAK Horizontal ---
+const boardSkakHorizontal = [
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", "K", ".", ".", ".", "R", ".", "."], // K di [2, 1], R di [2, 5]
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", "."]
+];
+console.log("Output Contoh 3 (SKAK Horizontal): " + checkRookCheck(boardSkakHorizontal));
